@@ -33,6 +33,4 @@ def getTranscripts():
 				elif text.name == "dl":
 					f.write(text.text + "\n\n")
 
-		break
-
 getTranscripts()
