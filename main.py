@@ -15,22 +15,21 @@ def getTranscripts():
 
 	Path.mkdir(Path("transcripts"), exist_ok=True)
 
-	# For each page, saae the transcript to a txt file
+	# For each page, save the transcript to a txt file
 	for link in page_links:
 		# Open lecture
 		page = requests.get("https://vanisource.org" + link["href"])
 		soup = BeautifulSoup(page.content, "html.parser")
 
-		# Get all text after audio
-		audio_container = soup.find("audio").parent
-		texts = audio_container.find_next_siblings()
+		text_container = soup.find("div", id="bodyContent")
+		for text in text_container.find("div", class_="mw-parser-output").findChildren(recursive=False):
+			if text.name == "p" and text.text != "\n":
 
-		with open("transcripts/" + link["title"] + ".txt", "w", encoding='utf-8') as f:
-			for text in texts:
-				if text.name == "p":
+				with open("transcripts/" + link["title"] + ".txt", "a", encoding='utf-8') as f:
 					f.write(text.text + "\n")
 
-				elif text.name == "dl":
+			elif text.name == "dl":
+				with open("transcripts/" + link["title"] + ".txt", "a", encoding='utf-8') as f:
 					f.write(text.text + "\n\n")
 
 getTranscripts()
